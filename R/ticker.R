@@ -1,16 +1,17 @@
 #' @export
-tick <- function(fn, ..., .measure = "real", .env = caller_env()) {
-  fn_sub <- fn_name(substitute(fn))
+tick <- function(fn, pkg = NULL, ..., .measure = "process", .env = caller_env()) {
+  id <- make_id(fn, pkg)
   arg_match(.measure, values = c("process", "real"))
 
-  ticker <- new_ticker(fn_sub)
+  check_enticked(id)
 
-  fn_ns_env <- ns_env_name_safe(fn)
-  check_enticked(fn_ns_env, fn_sub)
+  fn_unmocked <- env_get(ns_env_safe(pkg) %||% .env, fn)
+
+  ticker <- new_ticker(id, fn_unmocked)
 
   testthat::local_mocked_bindings(
-    !!fn_sub := entick(fn, ticker, .measure),
-    .package = ,
+    !!fn := entick(fn_unmocked, ticker, .measure),
+    .package = pkg,
     .env = .env
   )
 
@@ -18,44 +19,41 @@ tick <- function(fn, ..., .measure = "real", .env = caller_env()) {
 }
 
 #' @export
-untick <- function(ticker) {
-  env_unbind(ticks_, as.character(ticker))
+untick <- function(x) {
+  env_unbind(ticks_, as.character(x))
 
-  invisible(ticker)
+  invisible(x)
 }
 
-entick <- function(fn, ticker, measure) {
-  id <- as.character(ticker)
+entick <- function(fn_unmocked, ticker, measure) {
+  function(...) {
+    timings <-
+      bench::system_time({
+        res <- eval(call2(fn_unmocked, ...))
+      })[[measure]]
 
-  new_fn <-
-    function(...) {
-      timings <-
-        bench::system_time({
-          res <- fn(...)
-        })[[measure]]
+    env_bind(
+      ticks_,
+      !!as.character(ticker) := c(env_get(ticks_, as.character(ticker)), timings)
+    )
 
-
-      ticks_$id <- c(ticks_$id, timings)
-
-      res
-    }
-
-  new_fn
+    res
+  }
 }
 
-new_ticker <- function(fn_sub) {
+new_ticker <- function(id, fn) {
   ticker <- list()
-  rlang::env_bind(ticks_, !!fn_sub := ticker)
+  rlang::env_bind(ticks_, !!id := ticker)
 
-  structure(fn_sub, class = "ticker")
+  structure(list(id, fn), class = "ticker")
 }
 
-check_enticked <- function(fn_ns_env, fn_sub, env = caller_env()) {
-  if (identical(fn_ns_env, "stopwatch")) {
+check_enticked <- function(id, env = caller_env()) {
+  if (id %in% names(ticks_)) {
     cli_abort(
       c(
       "!" = "{.arg fn} is already enticked.",
-      "i" = 'Untick with `untick("{fn_sub}")` to clear timings.'
+      "i" = 'Untick with `untick("{id}")` to clear timings.'
       ),
       .envir = env
     )
@@ -74,6 +72,10 @@ format.ticker <- function(x, ...) {
   )
 }
 
+#' @export
+as.character.ticker <- function(x) {
+  as.character(x[[1]])
+}
 
 
 

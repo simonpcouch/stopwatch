@@ -1,15 +1,22 @@
-rand_id <- function(prefix = "step", len = 5) {
-  candidates <- c(letters, LETTERS, paste(0:9))
-  paste(prefix,
-        paste0(sample(candidates, len, replace = TRUE), collapse = ""),
-        sep = "_"
-  )
+make_id <- function(fn, pkg) {
+  if (is.null(pkg)) {
+    return(fn)
+  }
+
+  pkg_ns_env <- ns_env(pkg)
+  pkg_exports <- as.list(pkg_ns_env[[".__NAMESPACE__."]][["exports"]])
+
+  if (fn %in% pkg_exports) {
+    return(paste0(pkg, "::", fn))
+  }
+
+  paste0(pkg, ":::", fn)
 }
 
 fn_name <- function(fn) {
   as.character(fn[[length(fn)]])
 }
 
-ns_env_name_safe <- function(fn) {
-  tryCatch(ns_env_name(fn), error = function(e) NULL)
+ns_env_safe <- function(pkg) {
+  tryCatch(ns_env(pkg), error = function(e) NULL)
 }
