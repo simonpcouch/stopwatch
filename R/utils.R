@@ -36,8 +36,8 @@ env_get_safe <- function(env, nm) {
   tryCatch(env_get(env, nm), error = function(e) NULL)
 }
 
-get_unmocked_fn <- function(fn, env, call = caller_env()) {
-  for (env in c(ns_env_safe(env), global_env(), base_env())) {
+get_unmocked_fn <- function(fn, pkg, call = caller_env()) {
+  for (env in c(ns_env_safe(pkg), global_env(), base_env())) {
     res <- env_get_safe(env, fn)
     if (!is.null(res)) {
       return(list(res, env))

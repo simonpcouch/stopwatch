@@ -24,7 +24,7 @@ ticker_fn_name <- function(ticker) {
 }
 
 ticker_fn <- function(ticker) {
-  ticker[["fn"]]
+  ticker[["fn_name"]]
 }
 
 ticker_fn_env <- function(ticker) {
