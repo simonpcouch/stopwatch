@@ -15,5 +15,5 @@ BugReports: https://github.com/simonpcouch/stopwatch/issues
 Imports: 
     bench,
     cli,
-    rlang,
+    rlang (>= 1.1.0),
     testthat

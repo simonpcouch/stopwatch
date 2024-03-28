@@ -5,30 +5,39 @@ new_ticker <- function(id, fn) {
   structure(list(id, fn), class = "ticker")
 }
 
-entick <- function(fn_unmocked, ticker, measure) {
+is_ticker <- function(ticker) {
+  isTRUE(inherits(ticker, "ticker"))
+}
+
+ticker_id <- function(ticker) {
+  as.character(ticker)
+}
+
+ticker_fn <- function(ticker) {
+  ticker[[2]]
+}
+
+entick <- function(ticker, measure) {
   function(...) {
     timings <-
       bench::system_time({
-        res <- eval(call2(fn_unmocked, ...))
+        res <- eval(call2(ticker_fn(ticker), ...))
       })[[measure]]
 
-    env_bind(
-      ticks_,
-      !!as.character(ticker) := c(env_get(ticks_, as.character(ticker)), timings)
-    )
+    ticks_[[as.character(ticker)]] <- c(ticks_[[as.character(ticker)]], timings)
 
     res
   }
 }
 
-check_enticked <- function(id, env = caller_env()) {
+check_enticked <- function(id, call = caller_env()) {
   if (id %in% names(ticks_)) {
     cli_abort(
       c(
         "!" = "{.arg fn} is already enticked.",
         "i" = 'Untick with `untick("{id}")` to clear timings.'
       ),
-      .envir = env
+      .envir = call
     )
   }
 }
