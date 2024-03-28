@@ -4,20 +4,13 @@ tick <- function(fn, pkg = NULL, ..., .measure = "process", .env = caller_env())
   check_enticked(id)
   arg_match(.measure, values = c("process", "real"))
 
-  fn_unmocked <-
-    env_get(
-      ns_env_safe(pkg) %||% .env,
-      fn,
-      inherit = TRUE,
-      last = base::topenv()
-    )
+  fn_loc <- get_unmocked_fn(fn, pkg)
 
-  ticker <- new_ticker(id, fn_unmocked)
+  ticker <- new_ticker(id, fn, fn_loc)
 
-  testthat::local_mocked_bindings(
-    !!fn := entick(ticker, .measure),
-    .package = pkg,
-    .env = .env
+  env_really_bind(
+    fn_loc[[2]],
+    !!fn := entick(ticker, .measure)
   )
 
   ticker
@@ -42,21 +35,32 @@ untick.character <- function(x, pkg = NULL, ...) {
                {.arg pkg} {pkg}.")
   }
 
-  env_unbind(ticks_, id)
+  clear_ticker(tickers_[[id]])
 
-  invisible(x)
+  invisible()
 }
 
 #' @export
 untick.ticker <- function(x, ...) {
   id <- as.character(x)
-  if (id %in% names("ticks_")) {
+  if (id %in% names("tickers_")) {
     cli_abort("Could not find registered ticker for {.arg {id}}.")
   }
 
-  env_unbind(ticks_, id)
+  clear_ticker(id)
 
-  invisible(x)
+  invisible()
+}
+
+clear_ticker <- function(ticker) {
+  env_really_bind(
+    ticker_fn_env(ticker),
+    !!ticker_fn_name(ticker) := ticker_fn(ticker)
+  )
+  ticks_[[ticker_id(ticker)]] <- NULL
+  tickers_[[ticker_id(ticker)]] <- NULL
+
+  invisible()
 }
 
 # check_ticker <- function(x, arg = caller_arg(x), call = caller_env()) {

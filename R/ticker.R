@@ -1,8 +1,14 @@
-new_ticker <- function(id, fn) {
-  ticker <- list()
-  rlang::env_bind(ticks_, !!id := ticker)
+new_ticker <- function(id, fn_name, fn_loc) {
+  res <-
+    structure(
+      list(id = id, fn_name = fn_name, fn = fn_loc[[1]], fn_env = fn_loc[[2]]),
+      class = "ticker"
+    )
 
-  structure(list(id, fn), class = "ticker")
+  rlang::env_bind(ticks_, !!id := list())
+  rlang::env_bind(tickers_, !!id := res)
+
+  res
 }
 
 is_ticker <- function(ticker) {
@@ -13,8 +19,16 @@ ticker_id <- function(ticker) {
   as.character(ticker)
 }
 
+ticker_fn_name <- function(ticker) {
+  ticker[["fn_name"]]
+}
+
 ticker_fn <- function(ticker) {
-  ticker[[2]]
+  ticker[["fn"]]
+}
+
+ticker_fn_env <- function(ticker) {
+  ticker[["fn_env"]]
 }
 
 entick <- function(ticker, measure) {

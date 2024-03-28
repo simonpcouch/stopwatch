@@ -31,3 +31,26 @@ make_id <- function(fn, pkg, call = caller_env()) {
 ns_env_safe <- function(pkg) {
   tryCatch(ns_env(pkg), error = function(e) NULL)
 }
+
+env_get_safe <- function(env, nm) {
+  tryCatch(env_get(env, nm), error = function(e) NULL)
+}
+
+get_unmocked_fn <- function(fn, env, call = caller_env()) {
+  for (env in c(ns_env_safe(env), global_env(), base_env())) {
+    res <- env_get_safe(env, fn)
+    if (!is.null(res)) {
+      return(list(res, env))
+    }
+  }
+
+  cli_abort("Unable to locate {.fun {fn}}.", call = call)
+}
+
+env_really_bind <- function(.env, ...) {
+  bindings <- list2(...)
+  locked <- env_binding_are_locked(.env, names(bindings))
+  env_binding_unlock(.env, names(bindings)[locked])
+  env_bind(.env, !!!bindings)
+  env_binding_lock(.env, names(bindings)[locked])
+}

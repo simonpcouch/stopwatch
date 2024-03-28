@@ -6,3 +6,5 @@ ticks <- function(ticker) {
 # `ticks_` is an internal environment that the package uses to track
 # `entick()`ed functions.
 ticks_ <- rlang::new_environment()
+
+tickers_ <- rlang::new_environment()
