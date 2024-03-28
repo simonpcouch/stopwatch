@@ -1,6 +1,6 @@
 #' @export
 ticks <- function(ticker) {
-  ticks_[[as.character(ticker)]]
+  unlist(as.list(ticks_[[as.character(ticker)]]))
 }
 
 # `ticks_` is an internal environment that the package uses to track

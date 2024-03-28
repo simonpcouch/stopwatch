@@ -1,8 +1,8 @@
 new_ticker <- function(id, fn) {
-  ticker <- list()
-  rlang::env_bind(ticks_, !!id := ticker)
+  ticker_env <- new_environment()
+  rlang::env_bind(ticks_, !!id := ticker_env)
 
-  structure(list(id, fn), class = "ticker")
+  structure(list(id = id, fn = fn), class = "ticker")
 }
 
 is_ticker <- function(ticker) {
@@ -14,17 +14,18 @@ ticker_id <- function(ticker) {
 }
 
 ticker_fn <- function(ticker) {
-  ticker[[2]]
+  ticker[["fn"]]
 }
 
 entick <- function(ticker, measure) {
   function(...) {
     timings <-
       bench::system_time({
-        res <- eval(call2(ticker_fn(ticker), ...))
+        res <- eval_bare(call2(ticker_fn(ticker), ...))
       })[[measure]]
 
-    ticks_[[as.character(ticker)]] <- c(ticks_[[as.character(ticker)]], timings)
+    cur_ticker <- ticks_[[as.character(ticker)]]
+    env_bind(cur_ticker, !!as.character(length(cur_ticker) + 1) := timings)
 
     res
   }
@@ -56,5 +57,5 @@ format.ticker <- function(x, ...) {
 
 #' @export
 as.character.ticker <- function(x) {
-  as.character(x[[1]])
+  as.character(x[["id"]])
 }

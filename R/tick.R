@@ -14,11 +14,18 @@ tick <- function(fn, pkg = NULL, ..., .measure = "process", .env = caller_env())
 
   ticker <- new_ticker(id, fn_unmocked)
 
-  testthat::local_mocked_bindings(
+  local_mocked_bindings(
     !!fn := entick(ticker, .measure),
     .package = pkg,
-    .env = .env
+    .env = ns_env_safe(pkg) %||% .env,
+    .frame = ticks_[[as.character(ticker)]]
   )
+
+#   local_bindings_rebind(
+#     !!fn := entick(ticker, .measure),
+#     .env = ns_env(pkg),
+#     .frame = ticker
+#   )
 
   ticker
 }
