@@ -30,4 +30,13 @@
   <url>
     <loc>/reference/stopwatch-package.html</loc>
   </url>
+  <url>
+    <loc>/reference/tick.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ticks.html</loc>
+  </url>
+  <url>
+    <loc>/reference/untick.html</loc>
+  </url>
 </urlset>
