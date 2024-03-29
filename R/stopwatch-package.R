@@ -1,5 +1,6 @@
 #' @import rlang
 #' @import cli
+#' @inheritSection tick Workflow
 #' @keywords internal
 "_PACKAGE"
 

@@ -56,11 +56,13 @@ check_enticked <- function(id, call = caller_env()) {
   }
 }
 
+#' @keywords internal
 #' @export
 print.ticker <- function(x, ...) {
   cat(format(x, ...))
 }
 
+#' @keywords internal
 #' @export
 format.ticker <- function(x, ...) {
   cli::cli_text(
@@ -68,6 +70,7 @@ format.ticker <- function(x, ...) {
   )
 }
 
+#' @keywords internal
 #' @export
 as.character.ticker <- function(x) {
   as.character(x[[1]])
