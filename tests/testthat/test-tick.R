@@ -55,4 +55,6 @@ test_that("tick works (external package, ticker interface)", {
     error = TRUE,
     ticks(lm_ticker)
   )
+
+  expect_snapshot(lm_ticker)
 })

@@ -2,7 +2,7 @@
 
     Code
       lm_ticker
-    Message
+    Output
       A <ticker> for `stats::lm()`.
 
 ---
@@ -26,4 +26,12 @@
     Condition
       Error in `ticks()`:
       ! Could not find active ticker for `stats::lm`.
+
+---
+
+    Code
+      lm_ticker
+    Output
+      A <ticker> for `stats::lm()`.
+      x The ticker is no longer active!
 

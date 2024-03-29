@@ -59,15 +59,18 @@ check_enticked <- function(id, call = caller_env()) {
 #' @keywords internal
 #' @export
 print.ticker <- function(x, ...) {
-  cat(format(x, ...))
+  cat(format(x, ...), sep = "\n")
 }
 
 #' @keywords internal
 #' @export
 format.ticker <- function(x, ...) {
-  cli::cli_text(
-    "A {.cls ticker} for {.fun {as.character(x)}}."
-  )
+  cli::cli_format_method({
+    cli_text("A {.cls ticker} for {.fun {as.character(x)}}.")
+    if (!id_is_active(ticker_id(x))) {
+      cli_alert_danger("The ticker is no longer active!")
+    }
+  })
 }
 
 #' @keywords internal
