@@ -11,7 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/stopwatch)](https://CRAN.R-project.org/package=stopwatch)
 [![R-CMD-check](https://github.com/simonpcouch/stopwatch/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/simonpcouch/stopwatch/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/simonpcouch/stopwatch/branch/master/graph/badge.svg)](https://app.codecov.io/gh/simonpcouch/stopwatch?branch=master)
+coverage](https://codecov.io/gh/simonpcouch/stopwatch/branch/main/graph/badge.svg)](https://app.codecov.io/gh/simonpcouch/stopwatch?branch=main)
 <!-- badges: end -->
 
 stopwatch is an experimental R package for high-precision profiling. The

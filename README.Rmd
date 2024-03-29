@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/stopwatch)](https://CRAN.R-project.org/package=stopwatch)
 [![R-CMD-check](https://github.com/simonpcouch/stopwatch/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/simonpcouch/stopwatch/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/simonpcouch/stopwatch/branch/master/graph/badge.svg)](https://app.codecov.io/gh/simonpcouch/stopwatch?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/simonpcouch/stopwatch/branch/main/graph/badge.svg)](https://app.codecov.io/gh/simonpcouch/stopwatch?branch=main)
 <!-- badges: end -->
 
 stopwatch is an experimental R package for high-precision profiling. The package introduces "tickers," which temporarily mock an inputted function with a wrapper of the function that records the elapsed time of the call to the inputted function and stores it for later exploration.
