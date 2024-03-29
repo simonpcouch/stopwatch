@@ -26,14 +26,14 @@ ticks.default <- function(x, ...) {
 #' @rdname ticks
 #' @export
 ticks.ticker <- function(x, ...) {
-  ticks_[[as.character(x)]]
+  unlist(ticks_[[as.character(x)]])
 }
 
 #' @rdname ticks
 #' @export
 ticks.character <- function(x, pkg = NULL, ...) {
   id <- make_id(x, pkg)
-  ticks_[[id]]
+  unlist(ticks_[[id]])
 }
 
 # `ticks_` is an internal environment that the package uses to track

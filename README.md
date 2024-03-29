@@ -67,8 +67,8 @@ stats::lm
 #>         timings)
 #>     res
 #> }
-#> <bytecode: 0x144266c60>
-#> <environment: 0x144264c98>
+#> <bytecode: 0x125285218>
+#> <environment: 0x125266bb8>
 ```
 
 The new binding for `stats::lm()` calls the original `stats::lm()`
@@ -100,8 +100,7 @@ call to `stats::lm()` took:
 
 ``` r
 ticks(lm_ticker)
-#> [[1]]
-#> [1] 0.002263
+#> [1] 0.001956
 ```
 
 For as long as the function is enticked, it will record timings for
@@ -112,14 +111,7 @@ lm_res2 <- stats::lm(mpg ~ ., mtcars)
 lm_res3 <- stats::lm(mpg ~ ., mtcars)
 
 ticks(lm_ticker)
-#> [[1]]
-#> [1] 0.002263
-#> 
-#> [[2]]
-#> [1] 0.000611
-#> 
-#> [[3]]
-#> [1] 0.000562
+#> [1] 0.001956 0.000603 0.000555
 ```
 
 To restore the function to it’s previous definition (and erase the
@@ -201,7 +193,7 @@ stats::lm
 #>         z$qr <- NULL
 #>     z
 #> }
-#> <bytecode: 0x144321518>
+#> <bytecode: 0x12534df90>
 #> <environment: namespace:stats>
 ```
 
