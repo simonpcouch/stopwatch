@@ -5,11 +5,14 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
+should_eval <- TRUE
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  eval = should_eval
 )
 ```
 
@@ -22,37 +25,87 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/simonpcouch/stopwatch/branch/master/graph/badge.svg)](https://app.codecov.io/gh/simonpcouch/stopwatch?branch=master)
 <!-- badges: end -->
 
-The goal of stopwatch is to ...
+stopwatch is an experimental R package for high-precision profiling. The package introduces "tickers," which temporarily mock an inputted function with a wrapper of the function that records the elapsed time of the call to the inputted function and stores it for later exploration.
+
+**This package is experimental and quite unsafe. Use with caution!** I wrote this package for my own purposes and it is quite buggy outside of the context I'm interested in using it in.
 
 ## Installation
 
 You can install the development version of stopwatch like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+pak::pak("simonpcouch/stopwatch")
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+As an example, we'll fit a linear model, timing how long the call to `stats::lm()` takes. First, loading the package:
 
 ```{r example}
 library(stopwatch)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+Now, we set up a "ticker" for `stats::lm()` like so:
 
-```{r cars}
-summary(cars)
+```{r}
+lm_ticker <- tick("lm", "stats")
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+The result is a ticker:
 
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r}
+lm_ticker
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+Also, though, `tick()` has provided a new binding to the `stats::lm()` function:
+
+```{r}
+stats::lm
+```
+
+The new binding for `stats::lm()` calls the original `stats::lm()` definition, but wraps that call in `bench::system_time()`, which returns high-precision `timings` for its input. It then stores the resulting `timings` before returning the output from the original `stats::lm()` call.
+
+So, moving on to fitting that linear model:
+
+```{r}
+lm_res <- stats::lm(mpg ~ ., mtcars)
+```
+
+Again, the result is the same as it would be if we had called `stats::lm()` without establishing a ticker for it (albeit with a different call):
+
+```{r}
+coef(lm_res)
+```
+
+The benefit, though, is that we now have information on how long the call to `stats::lm()` took:
+
+```{r}
+ticks(lm_ticker)
+```
+
+For as long as the function is enticked, it will record timings for every call:
+
+```{r}
+lm_res2 <- stats::lm(mpg ~ ., mtcars)
+lm_res3 <- stats::lm(mpg ~ ., mtcars)
+
+ticks(lm_ticker)
+```
+
+To restore the function to it's previous definition (and erase the timings associated with the ticker), use `untick()`:
+
+```{r}
+untick(lm_ticker)
+
+stats::lm
+```
+
+In this example, of course, we could have just called `stats::lm()` inside of `bench::system_time()` ourselves and gone on our way. The utility of the package arises when the enticked function is called inside of other functions, such as if we fitted the linear model using the parsnip wrapper `parsnip::linear_reg()` or resampled the model using `tune::fit_resamples()`. 
+
+## Limitations
+
+* While `stopwatch()` looks to `testthat::local_mocked_bindings()` in most of its principles, it diverges in a couple places. Most importantly, tickers do not clear themselves via exit handlers and must be cleared manually. It _is_ possible to `withr::defer({untick(ticker)})` after creating a `ticker`, and I recommend doing so.
+
+* The package does not play nicely with recursive functions.
+
+* The package struggles with search paths. I use the package to entick functions from external, non-base packages, and it's most effective for that use case.
