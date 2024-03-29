@@ -46,10 +46,10 @@ test_that("tick works (external package, ticker interface)", {
   expect_false(ticker_is_active(lm_ticker))
 
   # already unticked
-  # expect_snapshot(
-  #   error = TRUE,
-  #   untick(lm_ticker)
-  # )
+  expect_snapshot(
+    error = TRUE,
+    untick(lm_ticker)
+  )
 
   # expect_snapshot(
   #   error = TRUE,

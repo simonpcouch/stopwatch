@@ -11,3 +11,11 @@
       stats::lm
     Output
 
+---
+
+    Code
+      untick(lm_ticker)
+    Condition
+      Error in `untick()`:
+      ! Could not find active ticker for `stats::lm`.
+
