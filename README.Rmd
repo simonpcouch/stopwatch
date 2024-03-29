@@ -109,3 +109,31 @@ In this example, of course, we could have just called `stats::lm()` inside of `b
 * The package does not play nicely with recursive functions.
 
 * The package struggles with search paths. I use the package to entick functions from external, non-base packages, and it's most effective for that use case.
+
+## Alternatives
+
+You may be interested in more principled alternatives to this package.
+
+* The initial approach for this package was inspired by `testthat::local_mocked_bindings()`, which implements a principled mocking framework.
+* Generally, I'd recommending using `profvis::profvis()` for profiling with R.
+* When using the base R Rprof, I like to wrap it as follows:
+
+``` r
+prof_tbl <- function(expr, ..., interval = 0.01) {
+  file <- withr::local_tempfile()
+
+  evalq({
+    on.exit(Rprof(NULL), add = TRUE, after = FALSE)
+    Rprof(file, ..., interval = interval, filter.callframes = TRUE)
+    expr
+  })
+
+  out <- summaryRprof(file)
+
+  out_tbl <- tibble::as_tibble(out$by.total, rownames = "fn")
+
+  out_tbl |>
+    dplyr::mutate(fn = gsub("\"", "", fn)) |>
+    dplyr::arrange(dplyr::desc(self.pct))
+}
+```

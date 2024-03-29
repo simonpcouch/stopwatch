@@ -21,7 +21,7 @@ the call to the inputted function and stores it for later exploration.
 
 **This package is experimental and quite unsafe. Use with caution!** I
 wrote this package for my own purposes and it is quite buggy outside of
-the context I’m interested in using it.
+the context I’m interested in using it in.
 
 ## Installation
 
@@ -67,8 +67,8 @@ stats::lm
 #>         timings)
 #>     res
 #> }
-#> <bytecode: 0x11136ae38>
-#> <environment: 0x1113691a0>
+#> <bytecode: 0x144266c60>
+#> <environment: 0x144264c98>
 ```
 
 The new binding for `stats::lm()` calls the original `stats::lm()`
@@ -101,7 +101,7 @@ call to `stats::lm()` took:
 ``` r
 ticks(lm_ticker)
 #> [[1]]
-#> [1] 0.002118
+#> [1] 0.002263
 ```
 
 For as long as the function is enticked, it will record timings for
@@ -113,13 +113,13 @@ lm_res3 <- stats::lm(mpg ~ ., mtcars)
 
 ticks(lm_ticker)
 #> [[1]]
-#> [1] 0.002118
+#> [1] 0.002263
 #> 
 #> [[2]]
-#> [1] 0.000594
+#> [1] 0.000611
 #> 
 #> [[3]]
-#> [1] 0.000556
+#> [1] 0.000562
 ```
 
 To restore the function to it’s previous definition (and erase the
@@ -201,7 +201,7 @@ stats::lm
 #>         z$qr <- NULL
 #>     z
 #> }
-#> <bytecode: 0x111421af0>
+#> <bytecode: 0x144321518>
 #> <environment: namespace:stats>
 ```
 
@@ -226,3 +226,34 @@ the parsnip wrapper `parsnip::linear_reg()` or resampled the model using
 - The package struggles with search paths. I use the package to entick
   functions from external, non-base packages, and it’s most effective
   for that use case.
+
+## Alternatives
+
+You may be interested in more principled alternatives to this package.
+
+- The initial approach for this package was inspired by
+  `testthat::local_mocked_bindings()`, which implements a principled
+  mocking framework.
+- Generally, I’d recommending using `profvis::profvis()` for profiling
+  with R.
+- When using the base R Rprof, I like to wrap it as follows:
+
+``` r
+prof_tbl <- function(expr, ..., interval = 0.01) {
+  file <- withr::local_tempfile()
+
+  evalq({
+    on.exit(Rprof(NULL), add = TRUE, after = FALSE)
+    Rprof(file, ..., interval = interval, filter.callframes = TRUE)
+    expr
+  })
+
+  out <- summaryRprof(file)
+
+  out_tbl <- tibble::as_tibble(out$by.total, rownames = "fn")
+
+  out_tbl |>
+    dplyr::mutate(fn = gsub("\"", "", fn)) |>
+    dplyr::arrange(dplyr::desc(self.pct))
+}
+```
