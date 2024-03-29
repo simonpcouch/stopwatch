@@ -1,3 +1,5 @@
+skip_if_not_installed("withr")
+
 test_that("tick works (external package, ticker interface)", {
   original_def <- stats::lm
   original_res <- stats::lm(mpg ~ ., mtcars)
