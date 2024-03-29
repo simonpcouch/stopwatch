@@ -19,3 +19,11 @@
       Error in `untick()`:
       ! Could not find active ticker for `stats::lm`.
 
+---
+
+    Code
+      ticks(lm_ticker)
+    Condition
+      Error in `ticks()`:
+      ! Could not find active ticker for `stats::lm`.
+

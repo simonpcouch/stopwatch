@@ -10,7 +10,7 @@ test_that("tick works (external package, ticker interface)", {
   expect_s3_class(lm_ticker, "ticker")
   expect_snapshot(lm_ticker)
 
-  expect_true(ticker_is_active(lm_ticker))
+  expect_true(id_is_active(ticker_id(lm_ticker)))
 
   expect_snapshot(
     stats::lm,
@@ -43,7 +43,7 @@ test_that("tick works (external package, ticker interface)", {
   expect_no_condition(untick(lm_ticker))
 
   expect_equal(original_def, stats::lm)
-  expect_false(ticker_is_active(lm_ticker))
+  expect_false(id_is_active(ticker_id(lm_ticker)))
 
   # already unticked
   expect_snapshot(
@@ -51,8 +51,8 @@ test_that("tick works (external package, ticker interface)", {
     untick(lm_ticker)
   )
 
-  # expect_snapshot(
-  #   error = TRUE,
-  #   ticks(lm_ticker)
-  # )
+  expect_snapshot(
+    error = TRUE,
+    ticks(lm_ticker)
+  )
 })

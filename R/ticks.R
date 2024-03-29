@@ -26,6 +26,11 @@ ticks.default <- function(x, ...) {
 #' @rdname ticks
 #' @export
 ticks.ticker <- function(x, ...) {
+  id <- ticker_id(x)
+  if (!id_is_active(id)) {
+    cli_abort("Could not find active ticker for {.arg {id}}.")
+  }
+
   unlist(ticks_[[as.character(x)]])
 }
 
@@ -33,6 +38,12 @@ ticks.ticker <- function(x, ...) {
 #' @export
 ticks.character <- function(x, pkg = NULL, ...) {
   id <- make_id(x, pkg)
+
+  if (!id_is_active(id)) {
+    cli_abort("Could not find active ticker for {.arg fn} {x} and \\
+               {.arg pkg} {pkg}.")
+  }
+
   unlist(ticks_[[id]])
 }
 

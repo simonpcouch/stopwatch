@@ -106,7 +106,7 @@ untick.default <- function(x, ...) {
 untick.character <- function(x, pkg = NULL, ...) {
   id <- make_id(x, pkg)
 
-  if (!ticker_is_active(id)) {
+  if (!id_is_active(id)) {
     cli_abort("Could not find active ticker for {.arg fn} {x} and \\
                {.arg pkg} {pkg}.")
   }
@@ -120,7 +120,7 @@ untick.character <- function(x, pkg = NULL, ...) {
 #' @export
 untick.ticker <- function(x, ...) {
   id <- as.character(x)
-  if (!ticker_is_active(id)) {
+  if (!id_is_active(id)) {
     cli_abort("Could not find active ticker for {.arg {id}}.")
   }
 

@@ -55,6 +55,6 @@ env_really_bind <- function(.env, ...) {
   env_binding_lock(.env, names(bindings)[locked])
 }
 
-ticker_is_active <- function(ticker) {
-  isTRUE(ticker_id(ticker) %in% names(ticks_))
+id_is_active <- function(id) {
+  isTRUE(id %in% names(ticks_))
 }
