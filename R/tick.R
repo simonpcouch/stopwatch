@@ -134,8 +134,8 @@ clear_ticker <- function(ticker) {
     ticker_fn_env(ticker),
     !!ticker_fn_name(ticker) := ticker_fn(ticker)
   )
-  ticks_[[ticker_id(ticker)]] <- NULL
-  tickers_[[ticker_id(ticker)]] <- NULL
+  env_unbind(ticks_, ticker_id(ticker))
+  env_unbind(tickers_, ticker_id(ticker))
 
   invisible()
 }
