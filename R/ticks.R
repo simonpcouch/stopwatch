@@ -17,16 +17,19 @@ ticks <- function(x, ...) {
   UseMethod("ticks")
 }
 
+#' @rdname ticks
 #' @export
 ticks.default <- function(x, ...) {
   cli_abort("No known {.fun ticks} method for {.obj_type_friendly {x}}.")
 }
 
+#' @rdname ticks
 #' @export
 ticks.ticker <- function(x, ...) {
   ticks_[[as.character(x)]]
 }
 
+#' @rdname ticks
 #' @export
 ticks.character <- function(x, pkg = NULL, ...) {
   id <- make_id(x, pkg)

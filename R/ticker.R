@@ -72,6 +72,6 @@ format.ticker <- function(x, ...) {
 
 #' @keywords internal
 #' @export
-as.character.ticker <- function(x) {
+as.character.ticker <- function(x, ...) {
   as.character(x[[1]])
 }

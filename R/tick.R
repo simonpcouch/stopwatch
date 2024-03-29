@@ -26,7 +26,7 @@
 #' * Restore the previous definition of `"fn"` with [untick()], like
 #' `untick(fn_enticked)` (or `untick("fn", "pkg")`).
 #'
-#' @examples
+#' @examplesIf FALSE
 #' # set up a "ticker" for `stats::lm()`:
 #' lm_ticker <- tick("lm", "stats")
 #' lm_ticker
@@ -95,11 +95,13 @@ untick <- function(x, ...) {
   UseMethod("untick")
 }
 
+#' @rdname untick
 #' @export
 untick.default <- function(x, ...) {
   cli_abort("No known {.fun untick} method for {.obj_type_friendly {x}}.")
 }
 
+#' @rdname untick
 #' @export
 untick.character <- function(x, pkg = NULL, ...) {
   id <- make_id(x, pkg)
@@ -114,6 +116,7 @@ untick.character <- function(x, pkg = NULL, ...) {
   invisible()
 }
 
+#' @rdname untick
 #' @export
 untick.ticker <- function(x, ...) {
   id <- as.character(x)

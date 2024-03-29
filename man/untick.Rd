@@ -2,9 +2,18 @@
 % Please edit documentation in R/tick.R
 \name{untick}
 \alias{untick}
+\alias{untick.default}
+\alias{untick.character}
+\alias{untick.ticker}
 \title{Restore a function to its original binding}
 \usage{
 untick(x, ...)
+
+\method{untick}{default}(x, ...)
+
+\method{untick}{character}(x, pkg = NULL, ...)
+
+\method{untick}{ticker}(x, ...)
 }
 \arguments{
 \item{x}{Either a ticker or the value passed to the \code{fn} argument of \code{\link[=tick]{tick()}}.}
@@ -35,6 +44,7 @@ The typical workflow of the package is as follows:
 }
 
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # set up a "ticker" for `stats::lm()`:
 lm_ticker <- tick("lm", "stats")
 lm_ticker
@@ -58,7 +68,7 @@ ticks(lm_ticker)
 # restore the function to its original definition and clear timings
 untick(lm_ticker)
 stats::lm
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=tick]{tick()}} and \code{\link[=ticks]{ticks()}}.

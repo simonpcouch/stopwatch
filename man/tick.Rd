@@ -40,6 +40,7 @@ The typical workflow of the package is as follows:
 }
 
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # set up a "ticker" for `stats::lm()`:
 lm_ticker <- tick("lm", "stats")
 lm_ticker
@@ -63,7 +64,7 @@ ticks(lm_ticker)
 # restore the function to its original definition and clear timings
 untick(lm_ticker)
 stats::lm
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=untick]{untick()}} and \code{\link[=ticks]{ticks()}}.

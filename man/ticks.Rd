@@ -2,14 +2,26 @@
 % Please edit documentation in R/ticks.R
 \name{ticks}
 \alias{ticks}
+\alias{ticks.default}
+\alias{ticks.ticker}
+\alias{ticks.character}
 \title{Retrieve the timings associated with a ticker}
 \usage{
 ticks(x, ...)
+
+\method{ticks}{default}(x, ...)
+
+\method{ticks}{ticker}(x, ...)
+
+\method{ticks}{character}(x, pkg = NULL, ...)
 }
 \arguments{
 \item{x}{Either a ticker or the value passed to the \code{fn} argument of \code{\link[=tick]{tick()}}.}
 
 \item{...}{Unused, should be empty.}
+
+\item{pkg}{If \code{x} is the value passed to the \code{fn} argument of \code{\link[=tick]{tick()}}, \code{pkg}
+is the value passed to the \code{pkg} argument of \code{\link[=tick]{tick()}}.}
 }
 \description{
 Given a \link[=tick]{ticker} or a function (and package) name,
@@ -31,6 +43,7 @@ The typical workflow of the package is as follows:
 }
 
 \examples{
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # set up a "ticker" for `stats::lm()`:
 lm_ticker <- tick("lm", "stats")
 lm_ticker
@@ -54,7 +67,7 @@ ticks(lm_ticker)
 # restore the function to its original definition and clear timings
 untick(lm_ticker)
 stats::lm
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=tick]{tick()}} and \code{\link[=untick]{untick()}}.
