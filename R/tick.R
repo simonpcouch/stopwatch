@@ -47,7 +47,7 @@ untick.ticker <- function(x, ...) {
     cli_abort("Could not find registered ticker for {.arg {id}}.")
   }
 
-  clear_ticker(id)
+  clear_ticker(x)
 
   invisible()
 }
