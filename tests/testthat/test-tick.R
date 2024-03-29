@@ -58,3 +58,41 @@ test_that("tick works (external package, ticker interface)", {
 
   expect_snapshot(lm_ticker)
 })
+
+test_that("tick works (external package, x + pkg interface)", {
+  original_def <- stats::lm
+  original_res <- stats::lm(mpg ~ ., mtcars)
+
+  withr::defer(tryCatch(untick("lm", "stats"), error = function(e) {NULL}))
+
+  expect_silent(lm_ticker <- tick("lm", "stats"))
+
+  expect_no_condition(ticker_res <- stats::lm(mpg ~ ., mtcars))
+
+  expect_no_condition(lm_ticker_res <- ticks("lm", "stats"))
+  expect_length(lm_ticker_res, 1)
+
+  expect_no_condition({
+    lm_res2 <- stats::lm(mpg ~ ., mtcars)
+    lm_res3 <- stats::lm(mpg ~ ., mtcars)
+  })
+
+  expect_no_condition(lm_ticker_res <- ticks("lm", "stats"))
+  expect_length(lm_ticker_res, 3)
+
+  expect_no_condition(untick("lm", "stats"))
+
+  expect_equal(original_def, stats::lm)
+  expect_false(id_is_active("stats::lm"))
+
+  # already unticked
+  expect_snapshot(
+    error = TRUE,
+    untick("lm", "stats")
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    ticks("lm", "stats")
+  )
+})

@@ -35,3 +35,19 @@
       A <ticker> for `stats::lm()`.
       x The ticker is no longer active!
 
+# tick works (external package, x + pkg interface)
+
+    Code
+      untick("lm", "stats")
+    Condition
+      Error in `untick()`:
+      ! Could not find active ticker for `fn` lm and `pkg` stats.
+
+---
+
+    Code
+      ticks("lm", "stats")
+    Condition
+      Error in `ticks()`:
+      ! Could not find active ticker for `fn` lm and `pkg` stats.
+
